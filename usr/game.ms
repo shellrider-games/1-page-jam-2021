@@ -1,21 +1,56 @@
 import "mathUtil"
+import "listUtil"
 
 MAP_ZERO_ZERO = {"x":gfx.width/4,"y":gfx.height/4}
 GRID_SIZE = 32
 WORLD_WIDTH = 20
 WORLD_HEIGHT = 10
 
+Cell = {}
+Cell.type = 0
+Cell.box = null
+
+GameSprite = new Sprite
+GameSprite.col = 0
+GameSprite.row = 0
+GameSprite.autoSpritePosition = function()
+    self.x = MAP_ZERO_ZERO.x+((1+self.col)*GRID_SIZE)
+    self.y = MAP_ZERO_ZERO.y+((1+self.row)*GRID_SIZE)
+end function
+
+Box = new GameSprite
+Box.image = file.loadImage("box.png")
+Box.init = function()
+    self.autoSpritePosition
+    display(4).sprites.push self
+end function
+
+setupWorld = function()
+    world = list.init2d(WORLD_WIDTH, WORLD_HEIGHT)
+    for col in range(0,world.len-1)
+        for row in range(0,world[col].len-1)
+            world[col][row] = new Cell
+        end for
+    end for
+    return world
+end function
+
+clear
+
 buttonJustPressed = false
-player = new Sprite
+
+player = new GameSprite
+
+tempBox = new Box
+tempBox.col = 9
+tempBox.row = 4
+tempBox.init
+
+world = setupWorld
+
+world[9][9].box = tempBox
 
 player.image = file.loadImage("player_sprite.png")
-player.col = 0
-player.row = 0
-
-player.autoSpritePosition = function()
-    player.x = MAP_ZERO_ZERO.x+((1+player.col)*GRID_SIZE)
-    player.y = MAP_ZERO_ZERO.y+((1+player.row)*GRID_SIZE)
-end function
 
 player.move = function(inputArray)
     player.row = mathUtil.clamp(player.row+inputArray[0]-inputArray[2],0,WORLD_HEIGHT-1)
