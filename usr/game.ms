@@ -3,8 +3,12 @@ import "listUtil"
 
 MAP_ZERO_ZERO = {"x":gfx.width/4,"y":gfx.height/4}
 GRID_SIZE = 32
-WORLD_WIDTH = 20
-WORLD_HEIGHT = 10
+WORLD_WIDTH = 19
+WORLD_HEIGHT = 11
+
+walls = [[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[4,1],[10,1],[11,1],[12,1],[13,1],[14,1],[15,1],[16,1],[17,1],[18,1],[0,2],[1,2],[2,2],[3,2],[4,2],[6,2],[7,2],[8,2],[10,2],[12,2],[13,2],[18,2],[0,3],[18,3],[0,4],[4,4],[6,4],[7,4],[9,4],[10,4],[11,4],[12,4],[13,4],[18,4],[0,5],[1,5],[2,5],[4,5],[6,5],[7,5],[9,5],[13,5],[14,5],[15,5],[16,5],[17,5],[18,5],[2,6],[9,6],[2,7],[3,7],[4,7],[8,7],[9,7],[4,8],[8,8],[4,9],[8,9],[4,10],[5,10],[6,10],[7,10],[8,10]]
+goals = [[16,2],[17,2],[16,3],[17,3],[16,4],[17,4]]
+boxes = [[2,3],[5,3],[5,6],[7,6],[7,7],[5,8]]
 
 Cell = {}
 Cell.type = 0
@@ -39,10 +43,19 @@ setupWorld = function()
             world[col][row] = new Cell
         end for
     end for
-    for i in range(5,9)
-        world[5][i].type = 2
+    for wall in walls
+        world[wall[0]][wall[1]].type = 2
     end for
-    world[9][9].type = 1
+    for goal in goals
+        world[goal[0]][goal[1]].type = 1
+    end for
+    for box in boxes
+        tmpBox = new Box
+        tmpBox.col = box[0]
+        tmpBox.row = box[1]
+        world[box[0]][box[1]].box = tmpBox
+        tmpBox.init
+    end for
     return world
 end function
 
@@ -80,6 +93,8 @@ clear
 buttonJustPressed = false
 
 player = new GameSprite
+player.col = 11
+player.row = 2
 
 tempBox = new Box
 tempBox.col = 9
